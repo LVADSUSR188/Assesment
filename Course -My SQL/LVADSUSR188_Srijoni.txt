@@ -1,0 +1,66 @@
+Lab 1 
+1. 
+SELECT CustomerID  FROM Customerinteractions
+WHERE Month ='March' AND Year = 2024 AND
+ DataUsed  >
+(
+SELECT AVG(DataUsed)
+FROM CustomerInteractions
+WHERE Month = 'March' AND Year = 2024);
+
+2.
+select DISTINCT c1.CustomerID
+FROM customerInteractions AS c1 JOIN customerInteractions AS c2
+ON c1.customerID = c2.customerID
+WHERE c1.Month = "March" AND c2.Month = "February" AND
+c1.CallDuration > c2.CallDuration;
+
+3. 
+select DISTINCT c1.CustomerID
+FROM customerInteractions AS c1 JOIN customerInteractions AS c2
+ON c1.customerID = c2.customerID
+WHERE c1.Month = "February" AND c2.Month = "March" AND
+c1.MessageCount > c2.MessageCount AND
+c1.DataUsed< c2.DataUsed ;
+
+Lab2
+4. 
+SELECT ProductTypeID, SUM(TotalSalesAmount)
+FROM quarterlysales
+WHERE ProductTypeID = 1
+GROUP BY ProductTypeID;
+
+5. SELECT ProductTypeID, SUM(TotalSalesAmount) AS sales
+FROM quarterlysales
+WHERE Quarter = 'Q1' AND Year = 2024
+GROUP BY ProductTypeID
+ORDER BY sales DESC LIMIT 1;
+
+6.SELECT ProductTypeID, AVG(TotalSalesAmount) AS sales
+FROM quarterlysales
+WHERE Quarter = 'Q2' AND Year = 2024 AND ProductTypeID = 1
+GROUP BY ProductTypeID;
+
+LAB 3	
+7.SELECT Region
+FROM sectorenergyconsumption
+WHERE EnergySource ='Solar' OR 'Wind'
+AND Month = 'March' AND Year = 2024 AND
+ConsumptionKWh >
+( Select Avg(ConsumptionKWh)
+FROM sectorenergyconsumption
+WHERE Month = 'March' AND Year = 2024);
+
+8.
+select DISTINCT c1.Sector
+FROM sectorenergyconsumption AS c1 JOIN sectorenergyconsumption AS c2
+ON c1.Sector = c2.Sector
+WHERE c1.Month = "March" AND c2.Month = "February" AND
+c1.ConsumptionKWh > c2.ConsumptionKWh;
+
+9.
+select DISTINCT c1.Sector
+FROM sectorenergyconsumption AS c1 JOIN sectorenergyconsumption AS c2
+ON c1.Sector = c2.Sector
+WHERE c1 ='Solar' OR c1='Wind' AND c2= 'Fossil Fuel' AND
+c1.ConsumptionKWh > c2.ConsumptionKWh;
