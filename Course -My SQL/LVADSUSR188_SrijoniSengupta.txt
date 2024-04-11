@@ -1,0 +1,79 @@
+1.
+SELECT machine_id
+FROM l1_maintenance_records
+WHERE  monthname(maintenance_date) = 'March' AND
+cost>
+(Select AVG(cost)
+FROM  l1_maintenance_records
+WHERE  Monthname(maintenance_date) = 'March');
+
+2.
+
+SELECT maintenance_type, COUNT(maintenance_type) AS count
+FROM l1_maintenance_records
+WHERE MONTHname(maintenance_date) = 'March' AND YEAR(maintenance_date) = 2024
+GROUP BY maintenance_type
+ORDER BY count DESC;
+
+3.
+(SELECT  technician_name, COUNT(technician_name) AS activity
+FROM l1_maintenance_records
+ORDER BY activity DESC LIMIT 1)
+UNION
+(SELECT technician_name, AVG(COST) AS AVG_COST
+FROM  l1_maintenance_records
+WHERE monthname(maintenance_date) = 'March' AND YEAR(maintenance_date) = 2024 
+ORDER BY AVG_COST DESC LIMIT 1);
+
+4.
+SELECT product_id,(
+AVG(incident_count_pre_update -incident_count_post_update )
+FROM l2_updates;
+
+5. SELECT update_id,
+FROM l2_updates AS l1 ;
+
+
+
+6.NA
+
+7. 
+
+SELECT p.patient_name, v.facility_id AS facility_visited, v.reason_for_visit, t.outcome
+FROM l3_patients  AS p INNER JOIN l3_visits AS v
+ON p.patient_id = v.patient_id
+INNER JOIN l3_treatments AS t
+ON v.visit_id = t.visit_id;
+
+8.SELECT f.facility_name, COUNT(v.facility_id) AS frequency
+FROM l3_visits AS V INNER JOIN l3_facilities AS f
+ON v.facility_id = f.facility_id
+GROUP BY f.facility_id
+ORDER BY frequency DESC;
+
+9.
+SELECT p.insurance_provider, count(t.visit_id)
+FROM l3_patients AS p INNER JOIN l3_visits AS v 
+ON p.patient_id = v.patient_id
+INNER JOIN l3_treatments AS t
+ON v.visit_id = t.visit_id
+WHERE outcome = ' Complicated' AND MONTH(v.visit_date)<= 4
+GROUP BY p.insurance_provider;
+
+10.SELECT category, SUM(quantity) 
+FROM l4_products AS l INNER JOIN l4_sales AS s
+ON l.product_id = s.product_id
+GROUP BY category;
+
+11.CREATE VIEW  Regional_Sales_Analysis AS
+Select Store_name, s.Quantity * p.price AS sales_data
+FROM  l4_stores AS st INNER JOIN l4_sales AS s 
+ON s.store_id = st.store_id 
+INNER JOIN l4_products AS p 
+ON s.product_id = p.product_id
+GROUP BY region;
+
+12.SELECT product_id, sale_id
+FROM l4_products AS p  OUTER JOIN l4_sales AS s OUTER JOIN region l4_stores AS st
+GROUP BY region;
+
