@@ -1,0 +1,94 @@
+1.
+
+2. SELECT p.product_category, SUM(sales_amount), RANK() OVER (PARTITION BY `product_category` ORDER BY `sales_amount` DESC) 
+FROM products AS p
+JOIN sales_records AS s
+ON p.product_id = s.product_id
+WHERE s.sales_date> date_sub(s.sales_date, INTERVAL 1 YEAR)
+LIMIT 3;
+
+3.ELECT customer_id, SUM(sales_amount) AS sales, 
+RANK() OVER( PARTITION BY product_id, GROUP BY s.sales_amount)
+WHEN 
+RANK() OVER( PARTITION BY product_id, GROUP BY s.sales_amount)<= 5 THEN HIGH
+RANK() OVER( PARTITION BY product_id, GROUP BY s.sales_amount)<= 10 THEN MEDIUM
+ELSE LOW
+END AS contribution
+FROM products JOIN Sales_records
+ON p.product_id = s.product_id;
+
+4.SELECT customer_id
+FROM Sales_records
+WHERE customer_id IN (
+SELECT customer_id
+FROM Sales_records
+WHERE sales_date =  date_sub(s.sales_date, INTERVAL 6 MONTH));
+
+5.SELECT f.flight_id, CONCAT ( departure_airport, ' ' , arrival_airport) AS route ,AVG(t.ticket_price)
+FROM flights AS f JOIN tickets AS t
+ON f.flight_id = t.flight_id;
+
+6.SELECT flight_id, COUNT(ticket_id)
+FROM tickets 
+WHERE month(ticket_date)>= date_sub( ticket_date, INTERVAL 1 MONTH)
+GROUP BY flight_id;
+
+7.SELECT p.passenger_id, p.passenger_name, SUM(t.ticket_price) AS total_amount_spent, frequent_flyer_status
+FROM passengers AS p JOIN Tickets AS t
+ON p.passenger_id = t.passenger_id
+GROUP BY p.passenger_id
+ORDER BY total_amount_spent DESC
+LIMIT 5;
+
+8.SELECT month(ticket_date) AS sales_month, COUNT(ticket_id) AS tickets_sold
+FROM tickets
+GROUP BY sales_month
+ORDER BY tickets_sold DESC
+LIMIT 1;
+
+9.SELECT p.player_id, MAX(registration_date) AS recent,
+datediff(play_date, recent) AS avg_duration
+FROM players AS p JOIN playerscores AS ps
+ON p.player_id = ps.player_id
+GROUP BY player_id
+ORDER BY avg_duration DESC;
+
+10.SELECT g.game_id, COUNT(player_id) AS no_of_players
+FROM games AS g JOIN playerscores AS ps
+ON g.game_id = ps.game_id
+GROUP BY game_id
+ORDER BY no_of_players DESC
+LIMIT 3;
+
+11.SELECT g.game_id, COUNT(player_id) AS no_of_players,
+AVG(score), MAX(score)
+FROM games AS g JOIN playerscores AS ps
+ON g.game_id = ps.game_id
+GROUP BY game_id;
+
+12. With PlayerData (
+SELECT p.player_id, ps.registration_date
+FIRST_VALUE(play_date) OVER( PARTITION BY 'playerid` ORDER BY `play_date' DESC),
+FROM playerscores AS ps
+JOIN players AS p
+ON ps.player_id = p.player_id )
+SELECT p.player_id, ps.registration_date
+FROM PlayerData
+WHERE (PlayerData. FIRST_VALUE) < date_sub( play_date, INTERVAL 1 MONTH)
+
+13.SELECT d.doctor_id, SUM(t.cost) AS treatment_cost
+FROM doctors AS d JOIN treatments AS t
+ON d.doctore_id = t.doctor_id
+GROUP BY d.doctor_id
+ORDER BY treatment_cost DESC;
+
+14.SELECT treatment_name, SUM(cost) AS revenue_generation
+FROM treatments
+ORDER BY treatment_name
+GROUP BY cost DESC;
+
+15.SELECT patient_id, patient_name, admission_date, discharge_date
+FROM patients
+ORDER BY admission_date ASC;
+
+16.
